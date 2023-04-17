@@ -55,4 +55,3 @@ class DatabaseView:
             self.databaseView.insert('',"end", values= (record))
         
         self.databaseViewWindow.mainloop()
-        
