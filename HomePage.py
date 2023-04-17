@@ -187,7 +187,7 @@ class HomePage():
             
         else:
             if self.test == "existed id":
-                tkinter.messagebox.showerror("Value Error", "This ID has already existed:\n-> Please enter the ID again")
+                tkinter.messagebox.showerror("Value Error", "This ID is already existed!\n Please enter the ID again.")
             else:
                 self.valueErrorMessage = "Invalid input in field " + self.test 
                 tkinter.messagebox.showerror("Value Error", self.valueErrorMessage)
@@ -230,7 +230,7 @@ class HomePage():
         for record in item:
             self.clientinfo_treeview.insert('',"end", values= record)
 
-        # update info in bill details after updating data
+        # Update info in bill details after updating data
         self.bDetail_text.delete(1.0, tkinter.END)
         self.bDetail_text.insert(tkinter.END, f'\n\t             Client ID:\t{attr[0][0]}')
         self.bDetail_text.insert(tkinter.END, f'\n------------------------------------------------------------------')
@@ -277,11 +277,21 @@ class HomePage():
     def query_database(self):
         self.database = Database()
         records=self.database.Display()
+
         for item in self.clientinfo_treeview.get_children():
             self.clientinfo_treeview.delete(item)
-        for record in records:
-            self.clientinfo_treeview.insert('',"end", values= record)
 
+        self.clientinfo_treeview.tag_configure('oddrow', background='white')
+        self.clientinfo_treeview.tag_configure('evenrow', background='light blue')
+        
+        global count
+        count = 0
+        for record in records:
+            if count%2==0:
+                self.clientinfo_treeview.insert('',"end", values= record, tags='evenrow')
+            else:
+                self.clientinfo_treeview.insert('',"end", values= record, tags='oddrow')
+            count += 1
 
 if __name__ == "__main__":
     homePage = HomePage()

@@ -2,7 +2,7 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 from Database import *
-from HomPage import *
+from HomePage import *
 
 class UpdateWindow:
     def __init__(self, iid, callback):
@@ -113,7 +113,7 @@ class UpdateWindow:
         self.d = self.database.Display()
         self.e = self.database.Search2(self.id)
         self.callback(self.d, self.e)
-        tkinter.messagebox.showinfo("Updated data", "Successfully updated the above data in the database")
+        tkinter.messagebox.showinfo("Updated data", "Successfully updated the above data to the database.")
 
     def Reset(self):
         self.fNameEntry.delete(0, tkinter.END)
@@ -132,3 +132,4 @@ class UpdateWindow:
         self.billperiodto_monthBox.delete(0, tkinter.END)
         self.billperiodto_yearBox.delete(0, tkinter.END)
         self.wateramountEntry.delete(0, tkinter.END)
+        

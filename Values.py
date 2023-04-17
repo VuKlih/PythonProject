@@ -3,7 +3,7 @@ class Values:
     def Validate(self, id, phone, email, wateramount):
         self.databse = Database()
         self. existId = self.databse.check_id_exist(id)
-        if not (id.isdigit() and (len(id) == 3)):
+        if not (id.isdigit() and (len(id) == 5)):
             return "id"
         elif self.existId == "exist":
             return "existed id"
@@ -15,3 +15,4 @@ class Values:
             return "wateramount"
         else:
             return "SUCCESS"
+        

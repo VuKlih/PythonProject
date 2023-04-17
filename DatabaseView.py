@@ -8,6 +8,7 @@ class DatabaseView:
         self.databaseViewWindow.wm_title("Database View")
         self.databaseViewWindow.geometry("1100x170+120+340")
         self.databaseViewWindow.iconbitmap("D:\B2\PythonProject\icon\SearchIcon.ico")
+
         # Label widgets
         tkinter.Label(self.databaseViewWindow, text = "Database View Window",  width = 25).pack(side="top", fill="x")
 
@@ -50,8 +51,8 @@ class DatabaseView:
         self.databaseView.column("wateramount",anchor= "center", width=200)
         self.databaseView.column("charges",anchor= "center", width=200)
 
-
         for record in data:
-            self.databaseView.insert('', 'end', values=(record))
-
+            self.databaseView.insert('',"end", values= (record))
+        
         self.databaseViewWindow.mainloop()
+        
