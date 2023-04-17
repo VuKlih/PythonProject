@@ -132,4 +132,3 @@ class UpdateWindow:
         self.billperiodto_monthBox.delete(0, tkinter.END)
         self.billperiodto_yearBox.delete(0, tkinter.END)
         self.wateramountEntry.delete(0, tkinter.END)
-        

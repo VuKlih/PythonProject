@@ -15,4 +15,3 @@ class Values:
             return "wateramount"
         else:
             return "SUCCESS"
-        
