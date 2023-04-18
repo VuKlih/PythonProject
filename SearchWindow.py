@@ -2,7 +2,7 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 from Database import *
-from DatabaseView import *
+from SearchClientInfo import *
 
 
 class SearchWindow:
@@ -32,6 +32,6 @@ class SearchWindow:
     def Search(self):
         self.database = Database()
         self.data = self.database.Search2(self.idEntry.get())
-        self.databaseView = DatabaseView(self.data)
+        self.databaseView = SearchClientInfo(self.data)
     
         

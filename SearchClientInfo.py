@@ -2,14 +2,14 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
-class DatabaseView:
+class SearchClientInfo:
     def __init__(self, data):
         self.databaseViewWindow = tkinter.Tk()
         self.databaseViewWindow.wm_title("Database View")
         self.databaseViewWindow.geometry("1100x170+120+340")
         self.databaseViewWindow.iconbitmap("D:\B2\PythonProject\icon\SearchIcon.ico")
         # Label widgets
-        tkinter.Label(self.databaseViewWindow, text = "Database View Window",  width = 25).pack(side="top", fill="x")
+        tkinter.Label(self.databaseViewWindow, text = "Client Information",  width = 25).pack(side="top", fill="x")
 
         self.scrollbarx = tkinter.Scrollbar(self.databaseViewWindow, orient="horizontal")
         self.scrollbary = tkinter.Scrollbar(self.databaseViewWindow, orient="vertical")

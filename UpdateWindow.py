@@ -2,7 +2,7 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 from Database import *
-from HomPage import *
+from HomePage import *
 
 class UpdateWindow:
     def __init__(self, iid, callback):

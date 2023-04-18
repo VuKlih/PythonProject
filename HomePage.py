@@ -2,7 +2,7 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 from Database import *
-from DatabaseView import *
+from SearchClientInfo import *
 from SearchWindow import *
 from UpdateWindow import *
 from Values import *
@@ -126,13 +126,13 @@ class HomePage():
         self.clientinfo_treeview['columns'] = ("Client ID", "Name", "DOB", "Gender", "Home address", "Phone number", "Email", "Bill period", "Amount of water", "Charges")
         self.clientinfo_treeview.column("#0", width=0, stretch= 0)
         self.clientinfo_treeview.column("Client ID", anchor= "center", width=100)
-        self.clientinfo_treeview.column("Name", anchor= "center", width=140)
-        self.clientinfo_treeview.column("DOB", anchor= "center", width=140)
-        self.clientinfo_treeview.column("Gender", anchor= "center", width=140)
-        self.clientinfo_treeview.column("Home address", anchor= "center", width=140)
+        self.clientinfo_treeview.column("Name", anchor= "center", width=180)
+        self.clientinfo_treeview.column("DOB", anchor= "center", width=110)
+        self.clientinfo_treeview.column("Gender", anchor= "center", width=100)
+        self.clientinfo_treeview.column("Home address", anchor= "center", width=180)
         self.clientinfo_treeview.column("Phone number", anchor= "center", width=140)
-        self.clientinfo_treeview.column("Email", anchor= "center", width=140)
-        self.clientinfo_treeview.column("Bill period", anchor= "center", width=140)
+        self.clientinfo_treeview.column("Email", anchor= "center", width=180)
+        self.clientinfo_treeview.column("Bill period", anchor= "center", width=180)
         self.clientinfo_treeview.column("Amount of water", anchor= "center", width=140)
         self.clientinfo_treeview.column("Charges", anchor= "center", width=140)
         
@@ -148,14 +148,20 @@ class HomePage():
         self.clientinfo_treeview.heading("Amount of water",text="Amount of water (m3)", anchor= "center")
         self.clientinfo_treeview.heading("Charges",text="Charges (VND)", anchor= "center")
         
+        self.clientinfo_treeview.tag_configure('oddrow', background='white')
+        self.clientinfo_treeview.tag_configure('evenrow', background='light blue')
+        
         # buttons
         tkinter.Button(self.F3, width = 10, text = "Search",command = self.Search).place(x=1010, y =70)
         tkinter.Button(self.F3, width = 10, text = "Update",command= self.Update ).place(x=1010, y =100)
         tkinter.Button(self.F3, width = 10, text = "Delete",command = self.Delete).place(x=1010, y =130)
         
+#-------------------------------------------------------------------------------------------------------------------------
+    
         self.clientinfo_treeview.bind("<ButtonRelease>",self.select_record)
         self.query_database()
         self.homePageWindow.mainloop()
+
 
     def Insert(self):
         self.values = Values()
@@ -176,10 +182,10 @@ class HomePage():
             self.bDetail_text.insert(tkinter.END, f'\n\tPhone number:    \t{self.phoneEntry.get()}')
             self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
             self.bDetail_text.insert(tkinter.END, f'\n\tPeriod:               \t{self.billperiodfrom_dateBox.get()}/{self.billperiodfrom_monthBox.get()}/{self.billperiodfrom_yearBox.get()} - {self.billperiodto_dateBox.get()}/{self.billperiodto_monthBox.get()}/{self.billperiodto_yearBox.get()}')
-            self.bDetail_text.insert(tkinter.END, f'\n\tWater Consumtion(m3): \t{self.wateramountEntry.get()}')
+            self.bDetail_text.insert(tkinter.END, f'\n\tWater Consumption(m3): \t{self.wateramountEntry.get()}')
             self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
             self.bDetail_text.insert(tkinter.END, f'\n\tTOTAL DUE:            \t{self.database.returnCharge(self.idEntry.get())}')
-            self.bDetail_text.insert(tkinter.END, f'\n\t (VND):        \t\n')
+            self.bDetail_text.insert(tkinter.END, f'\n\t (VND)\n')
             
             self.Reset()
             self.clientinfo_treeview.delete(*self.clientinfo_treeview.get_children())
@@ -187,9 +193,17 @@ class HomePage():
             
         else:
             if self.test == "existed id":
-                tkinter.messagebox.showerror("Value Error", "This ID has already existed:\n-> Please enter the ID again")
+                tkinter.messagebox.showerror("Value Error", "This ID is already existed:\n-> Please enter the ID again")
+            elif self.test == "id":
+                self.valueErrorMessage = "Invalid input in field " + self.test +"\n The ID must be a 5 digit number and greater than 9999"
+                tkinter.messagebox.showerror("Value Error", self.valueErrorMessage)
+            elif self.test == "phone":
+                self.valueErrorMessage = "Invalid input in field " + self.test +"\n The phone number must be a 10 digit number"
+                tkinter.messagebox.showerror("Value Error", self.valueErrorMessage)
+            elif self.test == "email":
+                self.valueErrorMessage = "Invalid input in field " + self.test +"\n The email must contain the characters @ and . "
             else:
-                self.valueErrorMessage = "Invalid input in field " + self.test 
+                self.valueErrorMessage = "Invalid input in field " + self.test +"\n The amount of water must be an integer"
                 tkinter.messagebox.showerror("Value Error", self.valueErrorMessage)
 
     def Reset(self):
@@ -224,63 +238,63 @@ class HomePage():
         self.query_database()
         tkinter.messagebox.showinfo("deleted data","Deleted successfully!")        
 
-    def treeview_billDetails_afterUpdate(self, item, attr):
+    def treeview_billDetails_afterUpdate(self, item, list):
         # Cập nhật Treeview của window 1 khi có thay đổi trên window 2
         self.clientinfo_treeview.delete(*self.clientinfo_treeview.get_children())
         for record in item:
             self.clientinfo_treeview.insert('',"end", values= record)
 
-        # update info in bill details after updating data
-        self.bDetail_text.delete(1.0, tkinter.END)
-        self.bDetail_text.insert(tkinter.END, f'\n\t             Client ID:\t{attr[0][0]}')
-        self.bDetail_text.insert(tkinter.END, f'\n------------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tName:                \t{attr[0][1]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tGender:              \t{attr[0][3]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tDOB:                  \t{attr[0][2]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tAddress:             \t{attr[0][4]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tEmail:                 \t{attr[0][6]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tPhone number:    \t{attr[0][5]}')
-        self.bDetail_text.insert(tkinter.END, f'\n------------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tPeriod:                \t{attr[0][7]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tWater Consumtion(m3): \t{attr[0][8]}')
-        self.bDetail_text.insert(tkinter.END, f'\n------------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tTOTAL DUE:        \t{attr[0][9]}\n')
+        # show undated info in bill details box after updating data
+        self.updatedRecord = list[0]
+        self.billDetails(self.updatedRecord)
 
     def Update(self):
         x = self.clientinfo_treeview.selection()[0]
+        print(x)
         self.updateWindow = UpdateWindow(self.clientinfo_treeview.item(x)["values"], self.treeview_billDetails_afterUpdate)
     
+    def billDetails(self, record):# record is a tuple       
+        self.bDetail_text.delete(1.0, tkinter.END)
+        self.bDetail_text.insert(tkinter.END, f'\n\t             CLIENT ID:\t{record[0]}')
+        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
+        self.bDetail_text.insert(tkinter.END, f'\n\tName:                \t{record[1]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tGender:              \t{record[3]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tDOB:                  \t{record[2]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tAddress:             \t{record[4]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tEmail:                 \t{record[6]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tPhone number:   \t{record[5]}')
+        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
+        self.bDetail_text.insert(tkinter.END, f'\n\tPeriod:               \t{record[7]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\tWater Consumption(m3): \t{record[8]}')
+        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
+        self.bDetail_text.insert(tkinter.END, f'\n\tTOTAL DUE:       \t{record[9]}')
+        self.bDetail_text.insert(tkinter.END, f'\n\t  (VND)\n')
+
     def select_record(self, select):
         self.Reset()
 
         self.selected = self.clientinfo_treeview.focus()
-        #print(self.selected)
+        # test: print(self.selected)
         self.values = self.clientinfo_treeview.item(self.selected, 'values')
         print(self.values)
         
-        self.bDetail_text.delete(1.0, tkinter.END)
-        self.bDetail_text.insert(tkinter.END, f'\n\t             CLIENT ID:\t{self.values[0]}')
-        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tName:                \t{self.values[1]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tGender:              \t{self.values[3]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tDOB:                  \t{self.values[2]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tAddress:             \t{self.values[4]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tEmail:                 \t{self.values[6]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tPhone number:    \t{self.values[5]}')
-        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tPeriod:               \t{self.values[7]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\tWater Consumtion(m3): \t{self.values[8]}')
-        self.bDetail_text.insert(tkinter.END, f'\n  ---------------------------------------------------------------')
-        self.bDetail_text.insert(tkinter.END, f'\n\tTOTAL DUE:        \t{self.values[9]}')
-        self.bDetail_text.insert(tkinter.END, f'\n\t  (VND)\n')
-    
+        #show selected record in the bill Details box
+        self.billDetails(self.values)
+
     def query_database(self):
         self.database = Database()
         records=self.database.Display()
         for item in self.clientinfo_treeview.get_children():
             self.clientinfo_treeview.delete(item)
+        
+        global count
+        count = 0
         for record in records:
-            self.clientinfo_treeview.insert('',"end", values= record)
+            if count%2==0:
+                self.clientinfo_treeview.insert('',"end", values= record, tags='evenrow')
+            else:
+                self.clientinfo_treeview.insert('',"end", values= record, tags='oddrow')
+            count += 1
 
 
 if __name__ == "__main__":
