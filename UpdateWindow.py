@@ -113,7 +113,7 @@ class UpdateWindow:
         self.d = self.database.Display()
         self.e = self.database.Search2(self.id)
         self.callback(self.d, self.e)
-        tkinter.messagebox.showinfo("Updated data", "Successfully updated the above data in the database")
+        tkinter.messagebox.showinfo("Updated data", "Successfully updated the above data to the database.")
 
     def Reset(self):
         self.fNameEntry.delete(0, tkinter.END)

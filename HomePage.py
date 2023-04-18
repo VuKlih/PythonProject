@@ -284,9 +284,10 @@ class HomePage():
     def query_database(self):
         self.database = Database()
         records=self.database.Display()
+
         for item in self.clientinfo_treeview.get_children():
             self.clientinfo_treeview.delete(item)
-        
+
         global count
         count = 0
         for record in records:
@@ -295,7 +296,6 @@ class HomePage():
             else:
                 self.clientinfo_treeview.insert('',"end", values= record, tags='oddrow')
             count += 1
-
 
 if __name__ == "__main__":
     homePage = HomePage()
